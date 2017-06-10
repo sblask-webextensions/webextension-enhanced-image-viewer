@@ -24,7 +24,9 @@
     "manifest_version": 2,
     "name": "Enhanced Image Viewer",
     "permissions": [
-        "<all_urls>"
+        "<all_urls>",
+        "webNavigation",
+        "webRequest"
     ],
     "version": "1.0.0"
 }
