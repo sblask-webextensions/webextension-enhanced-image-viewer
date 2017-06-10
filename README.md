@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sblask/webextension-enhanced-image-viewer.svg?branch=master)](https://travis-ci.org/sblask/webextension-enhanced-image-viewer)
+
 Enhanced Image Viewer
 =====================
 
