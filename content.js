@@ -1,10 +1,12 @@
+const IMAGE = document.getElementsByTagName("img")[0];
+
 const STYLE = makeStyle();
 const INFO = makeInfo();
 
 const SIZES = {
-    fit: {
+    fitUnlessSmaller: {
         css: "max-width: 100%; max-height: 100%;",
-        description: "Fit to browser window",
+        description: "Fit to browser window unless smaller",
     },
 
     fitToWidthUnlessSmaller: {
@@ -47,7 +49,18 @@ function handleClick(event) {
     currentSizeState = sizeStates[(sizeStates.indexOf(currentSizeState) + 1) % sizeStates.length];
 
     updateStyle();
-    updateInfo();
+    showInfo();
+}
+
+function handleKey(event)  {
+    if (event.ctrlKey) {
+        return;
+    }
+
+    switch (event.key) {
+        case "i":
+            showInfo();
+    }
 }
 
 function makeStyle() {
@@ -72,12 +85,17 @@ function makeInfo() {
     return info;
 }
 
-function updateInfo() {
+function showInfo() {
     if (infoTimeout) {
         clearTimeout(infoTimeout);
     }
 
-    INFO.textContent = SIZES[currentSizeState].description;
+    let text = "";
+    text += SIZES[currentSizeState].description;
+    text += " ";
+    text += `(${IMAGE.naturalWidth}x${IMAGE.naturalHeight} to ${IMAGE.width}x${IMAGE.height})`;
+
+    INFO.textContent = text;
     INFO.classList.add("show");
 
     infoTimeout = setTimeout(
@@ -118,6 +136,7 @@ function makeCSS() {
 }
 
 updateStyle();
-updateInfo();
+showInfo();
 
 document.addEventListener("click", handleClick, true);
+document.addEventListener("keyup", handleKey);
