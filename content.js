@@ -1,16 +1,37 @@
 const STYLE = makeStyle();
+const INFO = makeInfo();
+
 const SIZES = {
-    fit:                      "max-width:  100% !important; max-height: 100% !important;",
+    fit: {
+        css: "max-width: 100%; max-height: 100%;",
+        description: "Fit to browser window",
+    },
 
-    fitToWidthUnlessSmaller:  "max-width:  100% !important; width: auto !important; height: auto !important;",
-    fitToHeightUnlessSmaller: "max-height: 100% !important; width: auto !important; height: auto !important;",
+    fitToWidthUnlessSmaller: {
+        css: "max-width: 100%; width: auto; height: auto;",
+        description: "Fit to width unless smaller",
+    },
+    fitToHeightUnlessSmaller: {
+        css: "max-height: 100%; width: auto; height: auto;",
+        description: "Fit to height unless smaller",
+    },
 
-    fitToWidth:               "width: 100% !important; height: auto !important;",
-    fitToHeight:              "width: auto !important; height: 100% !important;",
+    fitToWidth: {
+        css: "width: 100%; height: auto;",
+        description: "Fit to width",
+    },
+    fitToHeight: {
+        css: "width: auto; height: 100%;",
+        description: "Fit to height",
+    },
 
-    noFit:                    "width: auto !important; height: auto !important;",
+    noFit: {
+        css: "width: auto; height: auto;",
+        description: "Natural size",
+    },
 };
 
+let infoTimeout = undefined;
 let sizeStates = Object.keys(SIZES);
 let currentSizeState = sizeStates[0];
 
@@ -24,7 +45,9 @@ function handleClick(event) {
     event.preventDefault();
 
     currentSizeState = sizeStates[(sizeStates.indexOf(currentSizeState) + 1) % sizeStates.length];
-    updateStyle(makeCSS());
+
+    updateStyle();
+    updateInfo();
 }
 
 function makeStyle() {
@@ -34,26 +57,67 @@ function makeStyle() {
     return style;
 }
 
-function updateStyle(css) {
+function updateStyle() {
     while (STYLE.hasChildNodes()) {
         STYLE.removeChild(STYLE.firstChild);
     }
 
-    STYLE.appendChild(document.createTextNode(css));
+    STYLE.appendChild(document.createTextNode(makeCSS()));
+}
+
+function makeInfo() {
+    let info = document.createElement("div");
+    info.id = "info";
+    document.body.appendChild(info);
+    return info;
+}
+
+function updateInfo() {
+    if (infoTimeout) {
+        clearTimeout(infoTimeout);
+    }
+
+    INFO.textContent = SIZES[currentSizeState].description;
+    INFO.classList.add("show");
+
+    infoTimeout = setTimeout(
+        function() {
+            clearTimeout(infoTimeout);
+            INFO.classList.remove("show");
+        },
+
+        2000
+    );
 }
 
 function makeCSS() {
     return `
-        body {
-            background: #000000 !important;
-        }
-        img {
-            cursor: default !important;
-            ${SIZES[currentSizeState]}
-        }
-    `;
+    body {
+        background: #000000;
+    }
+    img {
+        cursor: default;
+        ${SIZES[currentSizeState].css}
+    }
+    #info {
+        background: black;
+        border-radius: 15px;
+        border: 2px solid #555;
+        color: white;
+        opacity: 0;
+        padding: 5px 10px;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        transition: opacity .5s ease-in-out;
+    }
+    #info.show {
+        opacity: 1;
+    }
+    `.replace(/;/g, "!important;");
 }
 
-updateStyle(makeCSS());
+updateStyle();
+updateInfo();
 
 document.addEventListener("click", handleClick, true);
