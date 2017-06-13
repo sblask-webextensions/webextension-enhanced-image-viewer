@@ -1,5 +1,8 @@
+const IMAGE_FILE_URL = /file:\/\/.+\.(gif|gifv|jpg|jpeg|png|svg|webm)/;
+
 let knownImageURLs = new Set();
 
+// not fired for file:// URLs
 browser.webRequest.onHeadersReceived.addListener(
     checkForImageURL,
     {
@@ -25,7 +28,7 @@ function checkForImageURL(details) {
 }
 
 function maybeModifyTab(details) {
-    if (!knownImageURLs.has(details.url) || details.frameId !== 0) {
+    if (!knownImageURLs.has(details.url) && !details.url.match(IMAGE_FILE_URL) || details.frameId !== 0) {
         return;
     }
 
