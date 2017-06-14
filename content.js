@@ -34,11 +34,19 @@ const SIZES = {
 };
 
 let infoTimeout = undefined;
+
+let justGainedFocus = false;
+
 let sizeStates = Object.keys(SIZES);
 let currentSizeState = sizeStates[0];
 
 function handleClick(event) {
     if (event.buttons !== 0) {
+        return;
+    }
+
+    if (justGainedFocus) {
+        justGainedFocus = false;
         return;
     }
 
@@ -150,3 +158,5 @@ showInfo();
 
 document.addEventListener("click", handleClick, true);
 document.addEventListener("keyup", handleKey);
+
+window.addEventListener("focus", () => { justGainedFocus = true; }, true);
