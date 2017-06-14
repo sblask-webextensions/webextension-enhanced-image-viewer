@@ -59,7 +59,7 @@ function handleKey(event)  {
 
     switch (event.key) {
         case "i":
-            showInfo();
+            toggleInfo();
     }
 }
 
@@ -88,6 +88,7 @@ function makeInfo() {
 function showInfo() {
     if (infoTimeout) {
         clearTimeout(infoTimeout);
+        infoTimeout = undefined;
     }
 
     let text = "";
@@ -106,6 +107,15 @@ function showInfo() {
 
         2000
     );
+}
+
+function toggleInfo() {
+    if (infoTimeout) {
+        clearTimeout(infoTimeout);
+        infoTimeout = undefined;
+    }
+
+    INFO.classList.toggle("show");
 }
 
 function makeCSS() {
