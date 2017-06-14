@@ -134,7 +134,7 @@ function makeCSS() {
         color: white;
         opacity: 0;
         padding: 5px 10px;
-        position: absolute;
+        position: fixed;
         right: 20px;
         top: 20px;
         transition: opacity .5s ease-in-out;
