@@ -2,33 +2,42 @@ const IMAGE = document.getElementsByTagName("img")[0];
 
 const STYLE = makeStyle();
 const INFO = makeInfo();
+const SCROLLBAR_WIDTH = getScrollbarWidth();
 
 const SIZES = {
     fitUnlessSmaller: {
-        css: "max-width: 100%; max-height: 100%;",
+        cssOriginalOrientation: () => { return " img { max-width: 100%;  max-height: 100%; }"; },
+        cssChangedOrientation:  () => { return getRotatedCSS(...getFitDimensions(true)); },
         description: "Fit to browser window unless smaller",
     },
 
     fitToWidthUnlessSmaller: {
-        css: "max-width: 100%; width: auto; height: auto;",
+        cssOriginalOrientation: () => { return "img { max-width: 100%; }"; },
+        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions(true)); },
         description: "Fit to width unless smaller",
-    },
-    fitToHeightUnlessSmaller: {
-        css: "max-height: 100%; width: auto; height: auto;",
-        description: "Fit to height unless smaller",
     },
 
     fitToWidth: {
-        css: "width: 100%; height: auto;",
+        cssOriginalOrientation: () => { return "img { width: 100%; }"; },
+        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions()); },
         description: "Fit to width",
     },
+
+    fitToHeightUnlessSmaller: {
+        cssOriginalOrientation: () => { return "img { max-height: 100%; }"; },
+        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToHeightDimensions(true)); },
+        description: "Fit to height unless smaller",
+    },
+
     fitToHeight: {
-        css: "width: auto; height: 100%;",
+        cssOriginalOrientation: () => { return "img { height: 100%; }"; },
+        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToHeightDimensions()); },
         description: "Fit to height",
     },
 
     noFit: {
-        css: "width: auto; height: auto;",
+        cssOriginalOrientation: () => { return ""; },
+        cssChangedOrientation:  () => { return getRotatedCSS(IMAGE.naturalWidth, IMAGE.naturalHeight, window.innerWidth, window.innerHeight); },
         description: "Natural size",
     },
 };
@@ -36,23 +45,24 @@ const SIZES = {
 let infoTimeout = undefined;
 
 let justGainedFocus = false;
+let rotation = 0;
 
 let sizeStates = Object.keys(SIZES);
 let currentSizeState = sizeStates[0];
 
 function handleClick(event) {
-    if (event.buttons !== 0) {
-        return;
-    }
-
-    if (justGainedFocus) {
-        justGainedFocus = false;
+    if (event.button !== 0) {
         return;
     }
 
     event.stopImmediatePropagation();
     event.stopPropagation();
     event.preventDefault();
+
+    if (justGainedFocus) {
+        justGainedFocus = false;
+        return;
+    }
 
     currentSizeState = sizeStates[(sizeStates.indexOf(currentSizeState) + 1) % sizeStates.length];
 
@@ -68,7 +78,103 @@ function handleKey(event)  {
     switch (event.key) {
         case "i":
             toggleInfo();
+            break;
+        case "r":
+            rotation = (rotation + 90 + 360) % 360;
+            updateStyle();
+            break;
+        case "l":
+            rotation = (rotation - 90 + 360) % 360;
+            updateStyle();
+            break;
     }
+}
+
+function getFitDimensions(maxNatural=false) {
+    let [newImageWidth, newImageHeight, viewportWidth, viewportHeight] = getFitToWidthDimensions(maxNatural);
+
+    if (newImageWidth > window.innerHeight) {
+        [newImageWidth, newImageHeight, viewportWidth, viewportHeight] = getFitToHeightDimensions(maxNatural);
+    }
+
+    return [newImageWidth, newImageHeight, viewportWidth, viewportHeight];
+}
+
+function getFitToWidthDimensions(maxNatural=false) {
+    function newHeight(viewportWidth) {
+        if (maxNatural) {
+            return Math.min(IMAGE.naturalHeight, viewportWidth);
+        } else {
+            return viewportWidth;
+        }
+    }
+
+    let ratio = IMAGE.naturalWidth / IMAGE.naturalHeight;
+
+    let viewportWidth = window.innerWidth;
+    let viewportHeight = window.innerHeight;
+
+    let newImageHeight = newHeight(viewportWidth);
+    let newImageWidth = newImageHeight * ratio;
+
+    if (newImageWidth > viewportHeight) {
+        viewportWidth = viewportWidth - SCROLLBAR_WIDTH;
+        newImageHeight = newHeight(viewportWidth);
+        newImageWidth = newImageHeight * ratio;
+    }
+
+    return [newImageWidth, newImageHeight, viewportWidth, viewportHeight];
+}
+
+function getFitToHeightDimensions(maxNatural=false) {
+    function newWidth(viewportHeight) {
+        if (maxNatural) {
+            return Math.min(IMAGE.naturalWidth, viewportHeight);
+        } else {
+            return viewportHeight;
+        }
+    }
+
+    let ratio = IMAGE.naturalWidth / IMAGE.naturalHeight;
+
+    let viewportWidth = window.innerWidth;
+    let viewportHeight = window.innerHeight;
+
+    let newImageWidth = newWidth(viewportHeight);
+    let newImageHeight = newImageWidth / ratio;
+
+    if (newImageHeight > viewportWidth) {
+        viewportHeight = viewportHeight - SCROLLBAR_WIDTH;
+        newImageWidth = newWidth(viewportHeight);
+        newImageHeight = newImageWidth / ratio;
+    }
+
+    return [newImageWidth, newImageHeight, viewportWidth, viewportHeight];
+}
+
+function getScrollbarWidth() {
+    let css = `
+        .scrollbar-measure {
+            height: 100px;
+            overflow: scroll;
+            position: absolute;
+            top: -9999px;
+            width: 100px;
+        }
+    `;
+
+    let style = makeStyle();
+    style.appendChild(document.createTextNode(css));
+
+    let div = document.createElement("div");
+    div.className = "scrollbar-measure";
+    document.body.appendChild(div);
+
+    let scrollbarWidth = div.offsetWidth - div.clientWidth;
+
+    document.body.removeChild(div);
+    document.head.removeChild(style);
+    return scrollbarWidth;
 }
 
 function makeStyle() {
@@ -127,13 +233,24 @@ function toggleInfo() {
 }
 
 function makeCSS() {
+    let cssOverride = SIZES[currentSizeState].cssOriginalOrientation();
+
+    if (rotation === 90 || rotation === 270) {
+        cssOverride = SIZES[currentSizeState].cssChangedOrientation();
+    }
+
     return `
     body {
         background: #000000;
     }
     img {
         cursor: default;
-        ${SIZES[currentSizeState].css}
+        height: auto;
+        margin: auto;
+        position: absolute;
+        transform-origin: center;
+        transform: perspective(999px) rotate(${rotation}deg);
+        width: auto;
     }
     #info {
         background: black;
@@ -150,7 +267,33 @@ function makeCSS() {
     #info.show {
         opacity: 1;
     }
+    ${cssOverride}
     `.replace(/;/g, "!important;");
+}
+
+function getRotatedCSS(newImageWidth, newImageHeight, viewportWidth, viewportHeight) {
+    let rotationAdjust = Math.abs(newImageHeight - newImageWidth) / 2;
+    let horizontalSpace = Math.max(0, (viewportWidth  - newImageHeight) / 2);
+    let verticalSpace   = Math.max(0, (viewportHeight - newImageWidth)  / 2);
+    if (newImageHeight > newImageWidth) {
+        return `
+            img {
+                height: ${newImageHeight}px;
+                left:   ${ rotationAdjust + horizontalSpace}px;
+                margin: 0;
+                top:    ${-rotationAdjust + verticalSpace}px;
+            }
+        `;
+    } else {
+        return `
+            img {
+                height: ${newImageHeight}px;
+                left:   ${-rotationAdjust + horizontalSpace}px;
+                margin: 0;
+                top:    ${ rotationAdjust + verticalSpace}px;
+            }
+        `;
+    }
 }
 
 updateStyle();
