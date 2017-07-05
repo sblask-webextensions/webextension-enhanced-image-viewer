@@ -12,8 +12,8 @@
         "url": "https://github.com/sblask/webextension-enhanced-image-viewer"
     },
     "scripts": {
-        "artifact-create:chrome": "web-ext build --artifacts-dir . --ignore-files screenshots package.json icon.fodg",
-        "artifact-create:firefox": "web-ext build --artifacts-dir . --ignore-files screenshots package.json icon.fodg *.png browser-polyfill.js",
+        "artifact-create:chrome": "web-ext build --artifacts-dir . --ignore-files bin screenshots package.json icon.fodg",
+        "artifact-create:firefox": "web-ext build --artifacts-dir . --ignore-files bin screenshots package.json icon.fodg *.png browser-polyfill.js",
         "artifact-rename:chrome": "VERSION=$(jq --raw-output '.version' manifest.json); rename \"s/.zip$/-chrome.zip/\"  *$VERSION.zip",
         "artifact-rename:firefox": "VERSION=$(jq --raw-output '.version' manifest.json); rename \"s/.zip$/-firefox.zip/\" *$VERSION.zip",
         "build": "git add --all; rm *.zip; npm run modify:chrome && npm run artifact-create:chrome && npm run artifact-rename:chrome && git checkout -- . && npm run modify:firefox && npm run artifact-create:firefox && npm run artifact-rename:firefox && git checkout -- .",
@@ -28,7 +28,8 @@
         "release": "VERSION=$(jq --raw-output '.version' manifest.json); hub release create $(for file in *$VERSION*.zip; do echo \" -a ${file} \"; done) -m $VERSION $VERSION",
         "start": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk",
         "start:stable": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox",
-        "test": "web-ext lint"
+        "translation-check": "./bin/translation-check",
+        "test": "web-ext lint && npm run translation-check"
     },
     "title": "Enhanced Image Viewer",
     "version": "1.0.0"
