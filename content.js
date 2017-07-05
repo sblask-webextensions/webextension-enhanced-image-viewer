@@ -20,13 +20,13 @@ const SIZES = {
     },
 
     fitToWidthUnlessSmaller: {
-        cssOriginalOrientation: () => { return "img { max-width: 100%; }"; },
+        cssOriginalOrientation: () => { return "body { display: flex; height: 100%; } img { max-width: 100%; position: unset; }"; },
         cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions(true)); },
         description: browser.i18n.getMessage("fitToWidthUnlessSmaller"),
     },
 
     fitToWidth: {
-        cssOriginalOrientation: () => { return "img { width: 100%; }"; },
+        cssOriginalOrientation: () => { return "body { display: flex; height: 100%; } img { width: 100%; position: unset; }"; },
         cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions()); },
         description: browser.i18n.getMessage("fitToWidth"),
     },
