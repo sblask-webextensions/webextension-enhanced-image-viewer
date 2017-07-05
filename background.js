@@ -60,8 +60,15 @@ function modifyTab(tabId) {
     browser.tabs.executeScript(
         tabId,
         {
-            file: "content.js",
+            file: "browser-polyfill.js",
             runAt: "document_start",
         }
-    );
+    ).then(
+        browser.tabs.executeScript(
+            tabId,
+            {
+                file: "content.js",
+                runAt: "document_start",
+            }
+        ));
 }
