@@ -1,6 +1,27 @@
+const SIZE_STATES = "sizeStates";
+const AVAILABLE_SIZE_STATES = [
+    "fitUnlessSmaller",
+    "noFit",
+    "fitToHeight",
+    "fitToHeightUnlessSmaller",
+    "fitToWidth",
+    "fitToWidthUnlessSmaller",
+];
+
 const IMAGE_FILE_URL = /file:\/\/.+\.(gif|gifv|jpg|jpeg|png|svg|webm)/;
 
 let knownImageURLs = new Set();
+
+browser.storage.local.get([
+    SIZE_STATES,
+])
+    .then(
+        (result) => {
+            if (result[SIZE_STATES] === undefined) {
+                browser.storage.local.set({[SIZE_STATES]: AVAILABLE_SIZE_STATES});
+            }
+        }
+    );
 
 // not fired for file:// URLs
 browser.webRequest.onHeadersReceived.addListener(
