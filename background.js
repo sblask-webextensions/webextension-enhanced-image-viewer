@@ -1,4 +1,6 @@
+const BACKGROUND_COLOR = "backgroundColor";
 const SIZE_STATES = "sizeStates";
+
 const AVAILABLE_SIZE_STATES = [
     "fitUnlessSmaller",
     "noFit",
@@ -13,12 +15,16 @@ const IMAGE_FILE_URL = /file:\/\/.+\.(gif|gifv|jpg|jpeg|png|svg|webm)/;
 let knownImageURLs = new Set();
 
 browser.storage.local.get([
+    BACKGROUND_COLOR,
     SIZE_STATES,
 ])
     .then(
         (result) => {
             if (result[SIZE_STATES] === undefined) {
                 browser.storage.local.set({[SIZE_STATES]: AVAILABLE_SIZE_STATES});
+            }
+            if (result[BACKGROUND_COLOR] === undefined) {
+                browser.storage.local.set({[BACKGROUND_COLOR]: "#000000"});
             }
         }
     );

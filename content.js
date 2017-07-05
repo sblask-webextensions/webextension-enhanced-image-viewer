@@ -1,3 +1,4 @@
+const BACKGROUND_COLOR = "backgroundColor";
 const SIZE_STATES = "sizeStates";
 
 const IMAGE = document.getElementsByTagName("img")[0];
@@ -49,6 +50,7 @@ let infoTimeout = undefined;
 let justGainedFocus = false;
 let rotation = 0;
 
+let backgroundColor = undefined;
 let sizeStates = undefined;
 let currentSizeState = undefined;
 
@@ -243,7 +245,7 @@ function makeCSS() {
 
     return `
     body {
-        background: #000000;
+        background: ${backgroundColor};
     }
     img {
         cursor: default;
@@ -299,8 +301,9 @@ function getRotatedCSS(newImageWidth, newImageHeight, viewportWidth, viewportHei
 }
 
 function updateFromPreferences() {
-    browser.storage.local.get([SIZE_STATES]).then(
+    browser.storage.local.get([BACKGROUND_COLOR, SIZE_STATES]).then(
         (result) => {
+            backgroundColor = result[BACKGROUND_COLOR];
             sizeStates = result[SIZE_STATES];
             currentSizeState = sizeStates[0];
 

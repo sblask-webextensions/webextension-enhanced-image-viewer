@@ -1,4 +1,7 @@
 {
+    "backgroundColor": {
+        "message": "Background Color"
+    },
     "browserActionLabelDefault": {
         "message": "Enhanced Image Viewer"
     },

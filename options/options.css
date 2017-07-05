@@ -39,3 +39,6 @@ textarea {
     display: block;
     margin: -20px 0 0 25px;
 }
+.color-wrapper > label {
+    margin-right: 50px;
+}

@@ -1,13 +1,16 @@
+const BACKGROUND_COLOR = "backgroundColor";
 const SIZE_STATES = "sizeStates";
 
 function restoreOptions() {
     browser.storage.local.get([
+        BACKGROUND_COLOR,
         SIZE_STATES,
     ]).then(
         result => {
             for (let state of result[SIZE_STATES]) {
                 document.getElementById(state).checked = true;
             }
+            document.getElementById("backgroundColor").value = result[BACKGROUND_COLOR];
         }
     );
 }
@@ -39,6 +42,7 @@ function saveOptions(event) {
         sizeStates = [document.querySelector("#modes input").id];
 
     browser.storage.local.set({
+        [BACKGROUND_COLOR]: document.getElementById("backgroundColor").value,
         [SIZE_STATES]: sizeStates,
     });
 }
