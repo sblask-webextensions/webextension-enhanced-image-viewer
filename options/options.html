@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="./options.css">
+    </head>
+
+    <body>
+        <form>
+            <fieldset>
+
+                <label for="modes" data-i18n="fitModesSectionTitle"></label>
+                <fieldset id="modes">
+                    <div class="box-wrapper">
+                        <input type="checkbox" id="fitUnlessSmaller">
+                        <label for="fitUnlessSmaller" data-i18n="fitUnlessSmaller"></label>
+                    </div>
+                    <div class="box-wrapper">
+                        <input type="checkbox" id="noFit">
+                        <label for="noFit" data-i18n="noFit"></label>
+                    </div>
+                    <div class="box-wrapper">
+                        <input type="checkbox" id="fitToWidthUnlessSmaller">
+                        <label for="fitToWidthUnlessSmaller" data-i18n="fitToWidthUnlessSmaller"></label>
+                    </div>
+                    <div class="box-wrapper">
+                        <input type="checkbox" id="fitToWidth">
+                        <label for="fitToWidth" data-i18n="fitToWidth"></label>
+                    </div>
+                    <div class="box-wrapper">
+                        <input type="checkbox" id="fitToHeightUnlessSmaller">
+                        <label for="fitToHeightUnlessSmaller" data-i18n="fitToHeightUnlessSmaller"></label>
+                    </div>
+                    <div class="box-wrapper">
+                        <input type="checkbox" id="fitToHeight">
+                        <label for="fitToHeight" data-i18n="fitToHeight"></label>
+                    </div>
+                </fieldset>
+
+                <legend data-i18n="optionsTitle"></legend>
+            </fieldset>
+        </form>
+        <script src="../browser-polyfill.js"></script>
+        <script src="./options.js"></script>
+    </body>
+
+</html>

@@ -1,0 +1,41 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+body {
+    min-width: 400px;
+    padding: 10px;
+}
+form > fieldset {
+    border: 1px solid;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    width: 100%;
+}
+form > fieldset > label:not(:first-child),
+form > fieldset > fieldset > label:not(:first-child) {
+    display: inline-block;
+    margin-top: 10px;
+}
+form > fieldset > fieldset {
+    border-color: #DDDDDD;
+    padding: 5px;
+}
+input[type=text],
+input[type=number] {
+    width: 100%;
+}
+input[type=checkbox],
+input[type=radio] {
+    display: inline-block;
+}
+textarea {
+    height: 100px;
+    padding: 3px;
+    width: 100%;
+}
+.box-wrapper > label {
+    display: block;
+    margin: -20px 0 0 25px;
+}

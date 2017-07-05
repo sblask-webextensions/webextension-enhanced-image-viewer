@@ -1,3 +1,5 @@
+const SIZE_STATES = "sizeStates";
+
 const IMAGE = document.getElementsByTagName("img")[0];
 
 const STYLE = makeStyle();
@@ -8,37 +10,37 @@ const SIZES = {
     fitUnlessSmaller: {
         cssOriginalOrientation: () => { return " img { max-width: 100%;  max-height: 100%; }"; },
         cssChangedOrientation:  () => { return getRotatedCSS(...getFitDimensions(true)); },
-        description: "Fit to browser window unless smaller",
-    },
-
-    fitToWidthUnlessSmaller: {
-        cssOriginalOrientation: () => { return "img { max-width: 100%; }"; },
-        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions(true)); },
-        description: "Fit to width unless smaller",
-    },
-
-    fitToWidth: {
-        cssOriginalOrientation: () => { return "img { width: 100%; }"; },
-        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions()); },
-        description: "Fit to width",
-    },
-
-    fitToHeightUnlessSmaller: {
-        cssOriginalOrientation: () => { return "img { max-height: 100%; }"; },
-        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToHeightDimensions(true)); },
-        description: "Fit to height unless smaller",
-    },
-
-    fitToHeight: {
-        cssOriginalOrientation: () => { return "img { height: 100%; }"; },
-        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToHeightDimensions()); },
-        description: "Fit to height",
+        description: browser.i18n.getMessage("fitUnlessSmaller"),
     },
 
     noFit: {
         cssOriginalOrientation: () => { return ""; },
         cssChangedOrientation:  () => { return getRotatedCSS(IMAGE.naturalWidth, IMAGE.naturalHeight, window.innerWidth, window.innerHeight); },
-        description: "Natural size",
+        description: browser.i18n.getMessage("noFit"),
+    },
+
+    fitToWidthUnlessSmaller: {
+        cssOriginalOrientation: () => { return "img { max-width: 100%; }"; },
+        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions(true)); },
+        description: browser.i18n.getMessage("fitToWidthUnlessSmaller"),
+    },
+
+    fitToWidth: {
+        cssOriginalOrientation: () => { return "img { width: 100%; }"; },
+        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions()); },
+        description: browser.i18n.getMessage("fitToWidth"),
+    },
+
+    fitToHeightUnlessSmaller: {
+        cssOriginalOrientation: () => { return "img { max-height: 100%; }"; },
+        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToHeightDimensions(true)); },
+        description: browser.i18n.getMessage("fitToHeightUnlessSmaller"),
+    },
+
+    fitToHeight: {
+        cssOriginalOrientation: () => { return "img { height: 100%; }"; },
+        cssChangedOrientation:  () => { return getRotatedCSS(...getFitToHeightDimensions()); },
+        description: browser.i18n.getMessage("fitToHeight"),
     },
 };
 
@@ -47,8 +49,8 @@ let infoTimeout = undefined;
 let justGainedFocus = false;
 let rotation = 0;
 
-let sizeStates = Object.keys(SIZES);
-let currentSizeState = sizeStates[0];
+let sizeStates = undefined;
+let currentSizeState = undefined;
 
 function handleClick(event) {
     if (event.button !== 0) {
@@ -296,8 +298,20 @@ function getRotatedCSS(newImageWidth, newImageHeight, viewportWidth, viewportHei
     }
 }
 
-updateStyle();
-showInfo();
+function updateFromPreferences() {
+    browser.storage.local.get([SIZE_STATES]).then(
+        (result) => {
+            sizeStates = result[SIZE_STATES];
+            currentSizeState = sizeStates[0];
+
+            updateStyle();
+            showInfo();
+        }
+    );
+}
+
+browser.storage.onChanged.addListener(updateFromPreferences);
+updateFromPreferences();
 
 document.addEventListener("click", handleClick, true);
 document.addEventListener("keyup", handleKey);

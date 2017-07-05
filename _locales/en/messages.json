@@ -1,0 +1,35 @@
+{
+    "browserActionLabelDefault": {
+        "message": "Enhanced Image Viewer"
+    },
+    "extensionDescription": {
+        "message": "More modes to click through and simple rotation for image viewer"
+    },
+    "extensionName": {
+        "message": "Enhanced Image Viewer"
+    },
+    "fitModesSectionTitle": {
+        "message": "Clicking cycles forward through the modes selected here"
+    },
+    "fitToHeight": {
+        "message": "Fit image to window height"
+    },
+    "fitToHeightUnlessSmaller": {
+        "message": "Fit image to window height unless it's smaller"
+    },
+    "fitToWidth": {
+        "message": "Fit image to window width"
+    },
+    "fitToWidthUnlessSmaller": {
+        "message": "Fit image to window width unless it's smaller"
+    },
+    "fitUnlessSmaller": {
+        "message": "Fit image to browser window unless it's smaller"
+    },
+    "noFit": {
+        "message": "Natural size"
+    },
+    "optionsTitle": {
+        "message": "Options"
+    }
+}
