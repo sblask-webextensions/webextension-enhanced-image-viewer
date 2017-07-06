@@ -320,3 +320,4 @@ document.addEventListener("click", handleClick, true);
 document.addEventListener("keyup", handleKey);
 
 window.addEventListener("focus", () => { justGainedFocus = true; }, true);
+window.addEventListener("resize", updateStyle, true);
