@@ -1,5 +1,11 @@
-const BACKGROUND_COLOR = "backgroundColor";
-const SIZE_STATES = "sizeStates";
+const OPTION_BACKGROUND_COLOR = "backgroundColor";
+const OPTION_SIZE_STATES = "sizeStates";
+
+const OPTION_LAST_ROTATION = "lastRotation";
+const OPTION_REMEMBER_LAST_ROTATION = "rememberLastRotation";
+
+const OPTION_LAST_SIZE_STATE = "lastSizeState";
+const OPTION_REMEMBER_LAST_SIZE_STATE = "rememberLastSizeState";
 
 const IMAGE = document.getElementsByTagName("img")[0];
 
@@ -45,12 +51,10 @@ const SIZES = {
     },
 };
 
-let infoTimeout = undefined;
-
 let justGainedFocus = false;
-let rotation = 0;
 
 let backgroundColor = undefined;
+let rotation = undefined;
 let sizeStates = undefined;
 let currentSizeState = undefined;
 
@@ -69,9 +73,7 @@ function handleClick(event) {
     }
 
     currentSizeState = sizeStates[(sizeStates.indexOf(currentSizeState) + 1) % sizeStates.length];
-
-    updateStyle();
-    showInfo();
+    browser.storage.local.set({[OPTION_LAST_SIZE_STATE]: currentSizeState});
 }
 
 function handleKey(event)  {
@@ -85,11 +87,11 @@ function handleKey(event)  {
             break;
         case "r":
             rotation = (rotation + 90 + 360) % 360;
-            updateStyle();
+            browser.storage.local.set({[OPTION_LAST_ROTATION]: rotation});
             break;
         case "l":
             rotation = (rotation - 90 + 360) % 360;
-            updateStyle();
+            browser.storage.local.set({[OPTION_LAST_ROTATION]: rotation});
             break;
     }
 }
@@ -194,45 +196,30 @@ function updateStyle() {
     }
 
     STYLE.appendChild(document.createTextNode(makeCSS()));
+
+    updateInfo();
 }
 
 function makeInfo() {
     let info = document.createElement("div");
     info.id = "info";
+    info.classList.add("delayed");
     document.body.appendChild(info);
+
     return info;
 }
 
-function showInfo() {
-    if (infoTimeout) {
-        clearTimeout(infoTimeout);
-        infoTimeout = undefined;
-    }
-
+function updateInfo() {
     let text = "";
     text += SIZES[currentSizeState].description;
     text += " ";
     text += `(${IMAGE.naturalWidth}x${IMAGE.naturalHeight} to ${IMAGE.width}x${IMAGE.height})`;
 
     INFO.textContent = text;
-    INFO.classList.add("show");
-
-    infoTimeout = setTimeout(
-        function() {
-            clearTimeout(infoTimeout);
-            INFO.classList.remove("show");
-        },
-
-        2000
-    );
 }
 
 function toggleInfo() {
-    if (infoTimeout) {
-        clearTimeout(infoTimeout);
-        infoTimeout = undefined;
-    }
-
+    INFO.classList.remove("delayed");
     INFO.classList.toggle("show");
 }
 
@@ -268,6 +255,9 @@ function makeCSS() {
         top: 20px;
         transition: opacity .5s ease-in-out;
     }
+    #info.delayed {
+        transition-delay: 2s;
+    }
     #info.show {
         opacity: 1;
     }
@@ -300,21 +290,72 @@ function getRotatedCSS(newImageWidth, newImageHeight, viewportWidth, viewportHei
     }
 }
 
-function updateFromPreferences() {
-    browser.storage.local.get([BACKGROUND_COLOR, SIZE_STATES]).then(
+function onPreferencesChanged(changes) {
+    browser.storage.local.get([
+        OPTION_LAST_SIZE_STATE,
+        OPTION_REMEMBER_LAST_SIZE_STATE,
+    ]).then(
         (result) => {
-            backgroundColor = result[BACKGROUND_COLOR];
-            sizeStates = result[SIZE_STATES];
-            currentSizeState = sizeStates[0];
+            if (changes[OPTION_BACKGROUND_COLOR]) {
+                backgroundColor = changes[OPTION_BACKGROUND_COLOR].newValue;
+            }
+            if (changes[OPTION_LAST_ROTATION]) {
+                rotation = changes[OPTION_LAST_ROTATION].newValue;
+            }
 
+            if (changes[OPTION_SIZE_STATES]) {
+                let lastSizeState = changes[OPTION_LAST_SIZE_STATE] ?
+                    changes[OPTION_LAST_SIZE_STATE].newValue : result[OPTION_LAST_SIZE_STATE];
+                let rememberLastSizeState = changes[OPTION_REMEMBER_LAST_SIZE_STATE] ?
+                    changes[OPTION_REMEMBER_LAST_SIZE_STATE].newValue : result[OPTION_REMEMBER_LAST_SIZE_STATE];
+
+                sizeStates = changes[OPTION_SIZE_STATES].newValue;
+                if (rememberLastSizeState && sizeStates.indexOf(lastSizeState) >= 0) {
+                    currentSizeState = lastSizeState;
+                } else {
+                    currentSizeState = sizeStates[0];
+                    browser.storage.local.set({[OPTION_LAST_SIZE_STATE]: currentSizeState});
+                }
+            }
             updateStyle();
-            showInfo();
         }
     );
 }
 
-browser.storage.onChanged.addListener(updateFromPreferences);
-updateFromPreferences();
+function initFromPreferences() {
+    browser.storage.local.get([
+        OPTION_BACKGROUND_COLOR,
+        OPTION_LAST_ROTATION,
+        OPTION_LAST_SIZE_STATE,
+        OPTION_REMEMBER_LAST_ROTATION,
+        OPTION_REMEMBER_LAST_SIZE_STATE,
+        OPTION_SIZE_STATES,
+    ]).then(
+        (result) => {
+            backgroundColor = result[OPTION_BACKGROUND_COLOR];
+            sizeStates = result[OPTION_SIZE_STATES];
+
+            if (result[OPTION_REMEMBER_LAST_SIZE_STATE] && sizeStates.indexOf(result[OPTION_LAST_SIZE_STATE]) >= 0) {
+                currentSizeState = result[OPTION_LAST_SIZE_STATE];
+            } else {
+                currentSizeState = sizeStates[0];
+                browser.storage.local.set({[OPTION_LAST_SIZE_STATE]: currentSizeState});
+            }
+
+            if (result[OPTION_REMEMBER_LAST_ROTATION] && result[OPTION_LAST_ROTATION] !== undefined) {
+                rotation = result[OPTION_LAST_ROTATION];
+            } else {
+                rotation = 0;
+                browser.storage.local.set({[OPTION_LAST_ROTATION]: rotation});
+            }
+
+            updateStyle();
+        }
+    );
+}
+
+browser.storage.onChanged.addListener(onPreferencesChanged);
+initFromPreferences();
 
 document.addEventListener("click", handleClick, true);
 document.addEventListener("keyup", handleKey);
