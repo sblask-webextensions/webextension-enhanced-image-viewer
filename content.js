@@ -9,7 +9,7 @@ const OPTION_REMEMBER_LAST_SIZE_STATE = "rememberLastSizeState";
 
 const IMAGE = document.getElementsByTagName("img")[0];
 
-const STYLE = makeStyle();
+const IMAGE_STYLE = makeStyle();
 const INFO = makeInfo();
 const SCROLLBAR_WIDTH = getScrollbarWidth();
 
@@ -51,6 +51,7 @@ const SIZES = {
     },
 };
 
+let infoTimeout = undefined;
 let justGainedFocus = false;
 
 let backgroundColor = undefined;
@@ -190,20 +191,45 @@ function makeStyle() {
     return style;
 }
 
-function updateStyle() {
-    while (STYLE.hasChildNodes()) {
-        STYLE.removeChild(STYLE.firstChild);
+function updateImageStyle() {
+    while (IMAGE_STYLE.hasChildNodes()) {
+        IMAGE_STYLE.removeChild(IMAGE_STYLE.firstChild);
     }
 
-    STYLE.appendChild(document.createTextNode(makeCSS()));
+    IMAGE_STYLE.appendChild(document.createTextNode(makeImageCSS()));
 
     updateInfo();
+    flashInfo();
+}
+
+function initInfoStyle() {
+    let style = makeStyle();
+    let css = `
+        #info {
+            background: black;
+            border-radius: 15px;
+            border: 2px solid #555;
+            color: white;
+            opacity: 0;
+            padding: 5px 10px;
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            transition: opacity .5s ease-in-out;
+        }
+        #info.show {
+            opacity: 1;
+        }
+    `;
+    style.appendChild(document.createTextNode(css));
+    return style;
 }
 
 function makeInfo() {
+    initInfoStyle();
+
     let info = document.createElement("div");
     info.id = "info";
-    info.classList.add("delayed");
     document.body.appendChild(info);
 
     return info;
@@ -218,12 +244,28 @@ function updateInfo() {
     INFO.textContent = text;
 }
 
+function flashInfo() {
+    if (infoTimeout) {
+        clearTimeout(infoTimeout);
+    }
+
+    showInfo();
+    infoTimeout = setTimeout(hideInfo, 2000);
+}
+
+function showInfo() {
+    INFO.classList.add("show");
+}
+
+function hideInfo() {
+    INFO.classList.remove("show");
+}
+
 function toggleInfo() {
-    INFO.classList.remove("delayed");
     INFO.classList.toggle("show");
 }
 
-function makeCSS() {
+function makeImageCSS() {
     let cssOverride = SIZES[currentSizeState].cssOriginalOrientation();
 
     if (rotation === 90 || rotation === 270) {
@@ -231,37 +273,19 @@ function makeCSS() {
     }
 
     return `
-    body {
-        background: ${backgroundColor};
-    }
-    img {
-        cursor: default;
-        height: auto;
-        margin: auto;
-        position: absolute;
-        transform-origin: center;
-        transform: perspective(999px) rotate(${rotation}deg);
-        width: auto;
-    }
-    #info {
-        background: black;
-        border-radius: 15px;
-        border: 2px solid #555;
-        color: white;
-        opacity: 0;
-        padding: 5px 10px;
-        position: fixed;
-        right: 20px;
-        top: 20px;
-        transition: opacity .5s ease-in-out;
-    }
-    #info.delayed {
-        transition-delay: 2s;
-    }
-    #info.show {
-        opacity: 1;
-    }
-    ${cssOverride}
+        body {
+            background: ${backgroundColor};
+        }
+        img {
+            cursor: default;
+            height: auto;
+            margin: auto;
+            position: absolute;
+            transform-origin: center;
+            transform: perspective(999px) rotate(${rotation}deg);
+            width: auto;
+        }
+        ${cssOverride}
     `.replace(/;/g, "!important;");
 }
 
@@ -317,7 +341,7 @@ function onPreferencesChanged(changes) {
                     browser.storage.local.set({[OPTION_LAST_SIZE_STATE]: currentSizeState});
                 }
             }
-            updateStyle();
+            updateImageStyle();
         }
     );
 }
@@ -349,7 +373,7 @@ function initFromPreferences() {
                 browser.storage.local.set({[OPTION_LAST_ROTATION]: rotation});
             }
 
-            updateStyle();
+            updateImageStyle();
         }
     );
 }
@@ -361,4 +385,4 @@ document.addEventListener("click", handleClick, true);
 document.addEventListener("keyup", handleKey);
 
 window.addEventListener("focus", () => { justGainedFocus = true; }, true);
-window.addEventListener("resize", updateStyle, true);
+window.addEventListener("resize", updateImageStyle, true);
