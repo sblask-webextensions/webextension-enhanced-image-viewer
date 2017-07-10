@@ -59,6 +59,9 @@ let rotation = undefined;
 let sizeStates = undefined;
 let currentSizeState = undefined;
 
+let relativeClickX = 0;
+let relativeClickY = 0;
+
 function handleClick(event) {
     if (event.button !== 0) {
         return;
@@ -67,6 +70,12 @@ function handleClick(event) {
     event.stopImmediatePropagation();
     event.stopPropagation();
     event.preventDefault();
+
+    let clickX = event.pageX - IMAGE.offsetLeft;
+    let clickY = event.pageY - IMAGE.offsetTop;
+
+    relativeClickX = clickX / IMAGE.width;
+    relativeClickY = clickY / IMAGE.height;
 
     if (justGainedFocus) {
         justGainedFocus = false;
@@ -200,6 +209,7 @@ function updateImageStyle() {
 
     updateInfo();
     flashInfo();
+    adjustScroll();
 }
 
 function initInfoStyle() {
@@ -263,6 +273,16 @@ function hideInfo() {
 
 function toggleInfo() {
     INFO.classList.toggle("show");
+}
+
+function adjustScroll() {
+    let centerX = IMAGE.offsetLeft + IMAGE.width * relativeClickX;
+    let centerY = IMAGE.offsetTop + IMAGE.height * relativeClickY;
+
+    console.log(centerX, centerY);
+
+    relativeClickX = 0;
+    relativeClickY = 0;
 }
 
 function makeImageCSS() {
