@@ -300,9 +300,11 @@ function makeImageCSS() {
 
     return `
         body {
+            all: unset;
             background: ${backgroundColor};
         }
         img {
+            all: unset;
             cursor: default;
             height: auto;
             margin: auto;
@@ -312,7 +314,7 @@ function makeImageCSS() {
             width: auto;
         }
         ${cssOverride}
-    `.replace(/;/g, "!important;");
+    `;
 }
 
 function getRotatedCSS(newImageWidth, newImageHeight, viewportWidth, viewportHeight) {
@@ -414,3 +416,14 @@ document.addEventListener("keyup", handleKey);
 
 window.addEventListener("focus", () => { justGainedFocus = true; }, true);
 window.addEventListener("resize", updateImageStyle, true);
+
+let observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        IMAGE.removeAttribute(mutation.attributeName);
+    });
+});
+observer.observe(IMAGE, { attributes: true });
+
+IMAGE.removeAttribute("class");
+IMAGE.removeAttribute("height");
+IMAGE.removeAttribute("width");
