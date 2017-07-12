@@ -84,6 +84,24 @@ function handleClick(event) {
 
     currentSizeState = sizeStates[(sizeStates.indexOf(currentSizeState) + 1) % sizeStates.length];
     browser.storage.local.set({[OPTION_LAST_SIZE_STATE]: currentSizeState});
+
+    updateImageStyle();
+    adjustScroll();
+    flashInfo();
+}
+
+function adjustScroll() {
+    let { left, top } = IMAGE.getBoundingClientRect();
+    let offsetLeft = left + window.scrollX;
+    let offsetTop = top + window.scrollY;
+
+    let centerX = offsetLeft + IMAGE.width * relativeClickX;
+    let centerY = offsetTop + IMAGE.height * relativeClickY;
+
+    window.scrollTo(centerX - window.innerWidth / 2, centerY - window.innerHeight / 2);
+
+    relativeClickX = 0;
+    relativeClickY = 0;
 }
 
 function handleKey(event)  {
@@ -208,8 +226,6 @@ function updateImageStyle() {
     IMAGE_STYLE.appendChild(document.createTextNode(makeImageCSS()));
 
     updateInfo();
-    flashInfo();
-    adjustScroll();
 }
 
 function initInfoStyle() {
@@ -273,20 +289,6 @@ function hideInfo() {
 
 function toggleInfo() {
     INFO.classList.toggle("show");
-}
-
-function adjustScroll() {
-    let { left, top } = IMAGE.getBoundingClientRect();
-    let offsetLeft = left + window.scrollX;
-    let offsetTop = top + window.scrollY;
-
-    let centerX = offsetLeft + IMAGE.width * relativeClickX;
-    let centerY = offsetTop + IMAGE.height * relativeClickY;
-
-    window.scrollTo(centerX - window.innerWidth / 2, centerY - window.innerHeight / 2);
-
-    relativeClickX = 0;
-    relativeClickY = 0;
 }
 
 function makeImageCSS() {
@@ -366,6 +368,7 @@ function onPreferencesChanged(changes) {
                 }
             }
             updateImageStyle();
+            flashInfo();
         }
     );
 }
@@ -398,6 +401,7 @@ function initFromPreferences() {
             }
 
             updateImageStyle();
+            flashInfo();
         }
     );
 }
