@@ -21,7 +21,7 @@ const SIZES = {
     },
 
     noFit: {
-        cssOriginalOrientation: () => { return ""; },
+        cssOriginalOrientation: () => { return "img { left: 0; top: 0; }"; },
         cssChangedOrientation:  () => { return getRotatedCSS(IMAGE.naturalWidth, IMAGE.naturalHeight, window.innerWidth, window.innerHeight); },
         description: browser.i18n.getMessage("noFit"),
     },
