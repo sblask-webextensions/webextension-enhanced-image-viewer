@@ -276,10 +276,14 @@ function toggleInfo() {
 }
 
 function adjustScroll() {
-    let centerX = IMAGE.offsetLeft + IMAGE.width * relativeClickX;
-    let centerY = IMAGE.offsetTop + IMAGE.height * relativeClickY;
+    let { left, top } = IMAGE.getBoundingClientRect();
+    let offsetLeft = left + window.scrollX;
+    let offsetTop = top + window.scrollY;
 
-    console.log(centerX, centerY);
+    let centerX = offsetLeft + IMAGE.width * relativeClickX;
+    let centerY = offsetTop + IMAGE.height * relativeClickY;
+
+    window.scrollTo(centerX - window.innerWidth / 2, centerY - window.innerHeight / 2);
 
     relativeClickX = 0;
     relativeClickY = 0;
