@@ -82,7 +82,13 @@ function handleClick(event) {
         return;
     }
 
-    currentSizeState = sizeStates[(sizeStates.indexOf(currentSizeState) + 1) % sizeStates.length];
+    let direction = 1;
+    if (event.shiftKey) {
+        direction = -1;
+    }
+
+    let newIndex = (sizeStates.indexOf(currentSizeState) + sizeStates.length + direction) % sizeStates.length;
+    currentSizeState = sizeStates[newIndex];
     browser.storage.local.set({[OPTION_LAST_SIZE_STATE]: currentSizeState});
 
     updateImageStyle();
