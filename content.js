@@ -15,25 +15,25 @@ const SCROLLBAR_WIDTH = getScrollbarWidth();
 
 const SIZES = {
     fitUnlessSmaller: {
-        cssOriginalOrientation: () => { return " img { max-width: 100%;  max-height: 100%; }"; },
+        cssOriginalOrientation: () => { return "img { max-width: 100%;  max-height: 100%; }"; },
         cssChangedOrientation:  () => { return getRotatedCSS(...getFitDimensions(true)); },
         description: browser.i18n.getMessage("fitUnlessSmaller"),
     },
 
     noFit: {
-        cssOriginalOrientation: () => { return "img { left: 0; top: 0; }"; },
+        cssOriginalOrientation: () => { return "body { display: flex; height: 100%; } img { position: unset; flex-shrink: 0; }"; },
         cssChangedOrientation:  () => { return getRotatedCSS(IMAGE.naturalWidth, IMAGE.naturalHeight, window.innerWidth, window.innerHeight); },
         description: browser.i18n.getMessage("noFit"),
     },
 
     fitToWidthUnlessSmaller: {
-        cssOriginalOrientation: () => { return "body { display: flex; height: 100%; } img { max-width: 100%; position: unset; }"; },
+        cssOriginalOrientation: () => { return "body { display: flex; height: 100%; } img { max-width: 100%; position: unset; flex-shrink: 0; }"; },
         cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions(true)); },
         description: browser.i18n.getMessage("fitToWidthUnlessSmaller"),
     },
 
     fitToWidth: {
-        cssOriginalOrientation: () => { return "body { display: flex; height: 100%; } img { width: 100%; position: unset; }"; },
+        cssOriginalOrientation: () => { return "body { display: flex; height: 100%; } img { width: 100%; position: unset; flex-shrink: 0; }"; },
         cssChangedOrientation:  () => { return getRotatedCSS(...getFitToWidthDimensions()); },
         description: browser.i18n.getMessage("fitToWidth"),
     },
@@ -305,10 +305,14 @@ function makeImageCSS() {
         }
         img {
             all: unset;
+            bottom: 0;
             cursor: default;
             height: auto;
+            left: 0;
             margin: auto;
             position: absolute;
+            right: 0;
+            top: 0;
             transform-origin: center;
             transform: perspective(999px) rotate(${rotation}deg);
             width: auto;
@@ -427,3 +431,4 @@ observer.observe(IMAGE, { attributes: true });
 IMAGE.removeAttribute("class");
 IMAGE.removeAttribute("height");
 IMAGE.removeAttribute("width");
+IMAGE.removeAttribute("style");
