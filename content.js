@@ -97,6 +97,11 @@ function handleClick(event) {
 }
 
 function adjustScroll() {
+    if (rotation === 90 || rotation === 270) {
+        window.scrollTo(0, 0);
+        return;
+    }
+
     let { left, top } = IMAGE.getBoundingClientRect();
     let offsetLeft = left + window.scrollX;
     let offsetTop = top + window.scrollY;
