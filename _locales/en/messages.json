@@ -34,5 +34,11 @@
     },
     "optionsTitle": {
         "message": "Options"
+    },
+    "rememberLastRotation": {
+        "message": " Remember last rotation"
+    },
+    "rememberLastSizeState": {
+        "message": "Remember last mode"
     }
 }

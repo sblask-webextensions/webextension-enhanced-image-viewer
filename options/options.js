@@ -1,16 +1,24 @@
-const BACKGROUND_COLOR = "backgroundColor";
-const SIZE_STATES = "sizeStates";
+const OPTION_BACKGROUND_COLOR = "backgroundColor";
+const OPTION_SIZE_STATES = "sizeStates";
+
+const OPTION_REMEMBER_LAST_ROTATION = "rememberLastRotation";
+const OPTION_REMEMBER_LAST_SIZE_STATE = "rememberLastSizeState";
 
 function restoreOptions() {
     browser.storage.local.get([
-        BACKGROUND_COLOR,
-        SIZE_STATES,
+        OPTION_BACKGROUND_COLOR,
+        OPTION_REMEMBER_LAST_ROTATION,
+        OPTION_REMEMBER_LAST_SIZE_STATE,
+        OPTION_SIZE_STATES,
     ]).then(
         result => {
-            for (let state of result[SIZE_STATES]) {
+            for (let state of result[OPTION_SIZE_STATES]) {
                 document.getElementById(state).checked = true;
             }
-            document.getElementById("backgroundColor").value = result[BACKGROUND_COLOR];
+            document.getElementById("backgroundColor").value = result[OPTION_BACKGROUND_COLOR];
+            document.getElementById("backgroundColorPicker").style.backgroundColor = result[OPTION_BACKGROUND_COLOR];
+            document.getElementById("rememberLastRotation").checked = result[OPTION_REMEMBER_LAST_ROTATION];
+            document.getElementById("rememberLastSizeState").checked = result[OPTION_REMEMBER_LAST_SIZE_STATE];
         }
     );
 }
@@ -42,8 +50,10 @@ function saveOptions(event) {
         sizeStates = [document.querySelector("#modes input").id];
 
     browser.storage.local.set({
-        [BACKGROUND_COLOR]: document.getElementById("backgroundColor").value,
-        [SIZE_STATES]: sizeStates,
+        [OPTION_BACKGROUND_COLOR]: document.getElementById("backgroundColor").value,
+        [OPTION_SIZE_STATES]: sizeStates,
+        [OPTION_REMEMBER_LAST_ROTATION]: document.getElementById("rememberLastRotation").checked,
+        [OPTION_REMEMBER_LAST_SIZE_STATE]: document.getElementById("rememberLastSizeState").checked,
     });
 }
 
