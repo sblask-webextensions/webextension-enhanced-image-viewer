@@ -435,14 +435,23 @@ document.addEventListener("keyup", handleKey);
 window.addEventListener("focus", () => { justGainedFocus = true; }, true);
 window.addEventListener("resize", updateImageStyle, true);
 
-let observer = new MutationObserver(function(mutations) {
+let imageAttributeObserver = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
         IMAGE.removeAttribute(mutation.attributeName);
     });
 });
-observer.observe(IMAGE, { attributes: true });
+imageAttributeObserver.observe(IMAGE, { attributes: true });
 
 IMAGE.removeAttribute("class");
 IMAGE.removeAttribute("height");
 IMAGE.removeAttribute("width");
 IMAGE.removeAttribute("style");
+
+let bodyAttributeObserver = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        document.body.removeAttribute(mutation.attributeName);
+    });
+});
+bodyAttributeObserver.observe(document.body, { attributes: true });
+
+document.body.removeAttribute("style");
