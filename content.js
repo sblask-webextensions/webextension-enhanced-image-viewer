@@ -272,6 +272,9 @@ function updateInfo() {
     text += SIZES[currentSizeState].description;
     text += " ";
     text += `(${IMAGE.naturalWidth}x${IMAGE.naturalHeight} to ${IMAGE.width}x${IMAGE.height})`;
+    if (rotation) {
+        text += ` / ${rotation}°`;
+    }
 
     INFO.textContent = text;
 }
