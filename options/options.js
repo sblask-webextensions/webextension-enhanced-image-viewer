@@ -13,12 +13,13 @@ function restoreOptions() {
     ]).then(
         result => {
             for (let state of result[OPTION_SIZE_STATES]) {
-                document.getElementById(state).checked = true;
+                setBooleanValue(state, true);
             }
-            document.getElementById("backgroundColor").value = result[OPTION_BACKGROUND_COLOR];
+
+            setTextValue("backgroundColor", result[OPTION_BACKGROUND_COLOR]);
             document.getElementById("backgroundColorPicker").style.backgroundColor = result[OPTION_BACKGROUND_COLOR];
-            document.getElementById("rememberLastRotation").checked = result[OPTION_REMEMBER_LAST_ROTATION];
-            document.getElementById("rememberLastSizeState").checked = result[OPTION_REMEMBER_LAST_SIZE_STATE];
+            setBooleanValue("rememberLastRotation", result[OPTION_REMEMBER_LAST_ROTATION]);
+            setBooleanValue("rememberLastSizeState", result[OPTION_REMEMBER_LAST_SIZE_STATE]);
         }
     );
 }
@@ -40,6 +41,18 @@ function loadTranslations() {
             element.textContent = browser.i18n.getMessage(element.getAttribute("data-i18n"));
         }
     }
+}
+
+function setTextValue(elementID, newValue) {
+    let oldValue = document.getElementById(elementID).value;
+
+    if (oldValue !== newValue) {
+        document.getElementById(elementID).value = newValue;
+    }
+}
+
+function setBooleanValue(elementID, newValue) {
+    document.getElementById(elementID).checked = newValue;
 }
 
 function saveOptions(event) {
