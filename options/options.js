@@ -35,10 +35,11 @@ function enableAutosave() {
 
 function loadTranslations() {
     for (let element of document.querySelectorAll("[data-i18n]")) {
-        if (typeof browser === "undefined") {
+        let translationKey = element.getAttribute("data-i18n");
+        if (typeof browser === "undefined" || !browser.i18n.getMessage(translationKey)) {
             element.textContent = element.getAttribute("data-i18n");
         } else {
-            element.textContent = browser.i18n.getMessage(element.getAttribute("data-i18n"));
+            element.innerHTML = browser.i18n.getMessage(translationKey);
         }
     }
 }
