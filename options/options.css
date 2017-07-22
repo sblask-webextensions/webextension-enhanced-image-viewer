@@ -35,6 +35,12 @@ textarea {
     padding: 3px;
     width: 100%;
 }
+.box-wrapper {
+    margin-top: 5px;
+}
+.box-wrapper > .box-wrapper {
+    margin-left: 25px;
+}
 .box-wrapper > label, .color-wrapper .label {
     display: block;
     line-height: 20px;
