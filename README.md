@@ -3,7 +3,12 @@
 Enhanced Image Viewer
 =====================
 
-More features for the browser's default image viewer
+Enhances the browser's default image viewer with:
+
+ - more modes (configurable in the preferences - click toolbar button) to cycle
+   through when left-clicking
+ - easy rotation (in 90° steps) using `l` and `r` for left and right rotation
+   respectively.
 
 Feedback
 --------
