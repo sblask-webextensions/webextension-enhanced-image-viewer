@@ -7,6 +7,8 @@ const OPTION_REMEMBER_LAST_ROTATION = "rememberLastRotation";
 const OPTION_LAST_SIZE_STATE = "lastSizeState";
 const OPTION_REMEMBER_LAST_SIZE_STATE = "rememberLastSizeState";
 
+const DEFAULT_INFO_FONT_SIZE = 16;
+
 const IMAGE = document.getElementsByTagName("img")[0];
 
 const IMAGE_STYLE = makeStyle();
@@ -241,23 +243,28 @@ function updateImageStyle() {
 
 function initInfoStyle() {
     let style = makeStyle();
+
+    let zoomIndepependentWindowHeight = window.innerHeight * window.devicePixelRatio;
+    let relativeFontSize = DEFAULT_INFO_FONT_SIZE / zoomIndepependentWindowHeight * 100;
     let css = `
         #info {
             background: black;
-            border-radius: 15px;
-            border: 2px solid #555;
+            border-radius: ${relativeFontSize}vh;
+            border: ${0.1 * relativeFontSize}vh solid #555;
             color: white;
+            font-size: ${relativeFontSize}vh;
             opacity: 0;
-            padding: 5px 10px;
+            padding: ${0.3 * relativeFontSize}vh ${0.6 * relativeFontSize}vh;
             position: fixed;
-            right: 20px;
-            top: 20px;
+            right: ${relativeFontSize}vh;
+            top: ${relativeFontSize}vh;
             transition: opacity .5s ease-in-out;
         }
         #info.show {
             opacity: 1;
         }
     `;
+
     style.appendChild(document.createTextNode(css));
     return style;
 }
