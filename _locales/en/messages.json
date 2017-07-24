@@ -6,13 +6,13 @@
         "message": "Enhanced Image Viewer"
     },
     "extensionDescription": {
-        "message": "More modes to click through and simple rotation for image viewer"
+        "message": "Enhances the browser's default image viewer"
     },
     "extensionName": {
         "message": "Enhanced Image Viewer"
     },
     "fitModesSectionTitle": {
-        "message": "Clicking cycles forward through the modes selected here"
+        "message": "Left-clicking cycles forward through the modes selected here"
     },
     "fitToHeight": {
         "message": "Fit image to window height"
