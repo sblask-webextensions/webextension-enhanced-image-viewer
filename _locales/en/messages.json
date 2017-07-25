@@ -11,6 +11,9 @@
     "extensionName": {
         "message": "Enhanced Image Viewer"
     },
+    "fit": {
+        "message": "Fit image to browser window"
+    },
     "fitModesSectionTitle": {
         "message": "Left-clicking cycles forward through the modes selected here"
     },

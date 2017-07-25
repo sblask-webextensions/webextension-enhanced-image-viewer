@@ -7,6 +7,7 @@ const OPTION_REMEMBER_LAST_SIZE_STATE = "rememberLastSizeState";
 const AVAILABLE_SIZE_STATES = [
     "fitUnlessSmaller",
     "noFit",
+    "fit",
     "fitToHeight",
     "fitToHeightUnlessSmaller",
     "fitToWidth",
