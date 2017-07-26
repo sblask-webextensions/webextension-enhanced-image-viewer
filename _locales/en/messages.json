@@ -12,7 +12,7 @@
         "message": "Enhanced Image Viewer"
     },
     "fit": {
-        "message": "Fit image to browser window"
+        "message": "Fit image to browser window (respecting the aspect ratio)"
     },
     "fitModesSectionTitle": {
         "message": "Left-clicking cycles forward through the modes selected here"
@@ -30,7 +30,7 @@
         "message": "Fit image to window width unless it's smaller"
     },
     "fitUnlessSmaller": {
-        "message": "Fit image to browser window unless it's smaller"
+        "message": "Fit image to browser window unless it's smaller (respecting the aspect ratio)"
     },
     "noFit": {
         "message": "Natural size"
