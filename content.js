@@ -44,7 +44,7 @@ const SIZES = {
             if (imageAspectRatio < windowAspectRatio) {
                 return SIZES.fitToHeight.cssChangedOrientation();
             } else {
-                RETURN sizes.fitToWidth.cssChangedOrientation();
+                return SIZES.fitToWidth.cssChangedOrientation();
             }
         },
         description: browser.i18n.getMessage("fit"),
