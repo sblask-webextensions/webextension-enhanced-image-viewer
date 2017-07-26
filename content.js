@@ -344,7 +344,7 @@ function makeImageCSS() {
     }
 
     return `
-        body {
+        body, html {
             all: unset;
             background: ${backgroundColor};
         }
