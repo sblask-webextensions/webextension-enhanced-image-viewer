@@ -26,11 +26,11 @@
         "modify:remove-polyfill-references": "sed --in-place --regexp-extended '/\"(\\.\\.\\/)?browser-polyfill.js\"/d' $(find . -not -path '*node_modules*' -name '*.js' -o -name '*.html')",
         "readme": "cat README.md | sed -r 's/\\[.+\\]\\((.+)\\)/\\1/' | sed -r '/\\[/{ N; s/\\[.+\\]\\((.+)\\)/\\n\\1/ }' | sed -r '/```/,/```/d' | vim -",
         "release": "VERSION=$(jq --raw-output '.version' manifest.json); hub release create $(for file in *$VERSION*.zip; do echo \" -a ${file} \"; done) -m $VERSION $VERSION",
-        "start": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk --url $(jq --raw-output '.homepage_url' manifest.json)",
+        "start": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox --url $(jq --raw-output '.homepage_url' manifest.json)",
         "start:german": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox --pref=general.useragent.locale=de-DE --pref=intl.locale.matchOS=false --url $(jq --raw-output '.homepage_url' manifest.json)",
-        "start:stable": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox --url $(jq --raw-output '.homepage_url' manifest.json)",
-        "translation-check": "./bin/translation-check",
-        "test": "web-ext lint && npm run translation-check"
+        "start:nightly": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk --url $(jq --raw-output '.homepage_url' manifest.json)",
+        "test": "web-ext lint && npm run translation-check",
+        "translation-check": "./bin/translation-check"
     },
     "title": "Enhanced Image Viewer",
     "version": "1.1.0"
