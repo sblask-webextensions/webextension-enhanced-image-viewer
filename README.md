@@ -20,6 +20,11 @@ probably only works as expected in natural size scaling mode. If the chosen
 scaling mode is fitting the image to width or height, zooming does not change
 the image size.
 
+Privacy Policy
+--------------
+
+This extension does not collect or send data of any kind to third parties.
+
 Feedback
 --------
 
