@@ -254,6 +254,11 @@ function makeStyle() {
 }
 
 function updateImageStyle() {
+    if (IMAGE.naturalWidth == 0) {
+        setTimeout(updateImageStyle, 100);
+        return;
+    }
+
     while (IMAGE_STYLE.hasChildNodes()) {
         IMAGE_STYLE.removeChild(IMAGE_STYLE.firstChild);
     }
