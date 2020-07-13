@@ -16,7 +16,7 @@ const AVAILABLE_SIZE_STATES = [
 
 const IMAGE_FILE_URL = /file:\/\/.+\.(gif|gifv|jpg|jpeg|png|svg|webm)/;
 
-let knownImageURLs = new Set();
+const knownImageURLs = new Set();
 
 browser.storage.local.get([
     OPTION_BACKGROUND_COLOR,
@@ -58,7 +58,7 @@ function checkForImageURL(details) {
         return;
     }
 
-    for (let header of details.responseHeaders) {
+    for (const header of details.responseHeaders) {
         if (header.name.toLowerCase() === "content-type" && header.value.indexOf("image/") === 0) {
             knownImageURLs.add(details.url);
             return;

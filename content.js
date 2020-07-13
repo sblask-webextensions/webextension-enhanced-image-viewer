@@ -30,8 +30,8 @@ const SIZES = {
 
     fit: {
         cssOriginalOrientation: () => {
-            let imageAspectRatio = IMAGE.naturalWidth / IMAGE.naturalHeight;
-            let windowAspectRatio = window.innerWidth / window.innerHeight;
+            const imageAspectRatio = IMAGE.naturalWidth / IMAGE.naturalHeight;
+            const windowAspectRatio = window.innerWidth / window.innerHeight;
             if (imageAspectRatio < windowAspectRatio) {
                 return SIZES.fitToHeight.cssOriginalOrientation();
             } else {
@@ -39,8 +39,8 @@ const SIZES = {
             }
         },
         cssChangedOrientation:  () => {
-            let imageAspectRatio = IMAGE.naturalHeight / IMAGE.naturalWidth;
-            let windowAspectRatio = window.innerWidth / window.innerHeight;
+            const imageAspectRatio = IMAGE.naturalHeight / IMAGE.naturalWidth;
+            const windowAspectRatio = window.innerWidth / window.innerHeight;
             if (imageAspectRatio < windowAspectRatio) {
                 return SIZES.fitToHeight.cssChangedOrientation();
             } else {
@@ -95,8 +95,8 @@ function handleClick(event) {
     event.stopPropagation();
     event.preventDefault();
 
-    let clickX = event.pageX - IMAGE.offsetLeft;
-    let clickY = event.pageY - IMAGE.offsetTop;
+    const clickX = event.pageX - IMAGE.offsetLeft;
+    const clickY = event.pageY - IMAGE.offsetTop;
 
     relativeClickX = clickX / IMAGE.width;
     relativeClickY = clickY / IMAGE.height;
@@ -111,7 +111,7 @@ function handleClick(event) {
         direction = -1;
     }
 
-    let newIndex = (sizeStates.indexOf(currentSizeState) + sizeStates.length + direction) % sizeStates.length;
+    const newIndex = (sizeStates.indexOf(currentSizeState) + sizeStates.length + direction) % sizeStates.length;
     currentSizeState = sizeStates[newIndex];
     browser.storage.local.set({[OPTION_LAST_SIZE_STATE]: currentSizeState});
 
@@ -126,12 +126,12 @@ function adjustScroll() {
         return;
     }
 
-    let { left, top } = IMAGE.getBoundingClientRect();
-    let offsetLeft = left + window.scrollX;
-    let offsetTop = top + window.scrollY;
+    const { left, top } = IMAGE.getBoundingClientRect();
+    const offsetLeft = left + window.scrollX;
+    const offsetTop = top + window.scrollY;
 
-    let centerX = offsetLeft + IMAGE.width * relativeClickX;
-    let centerY = offsetTop + IMAGE.height * relativeClickY;
+    const centerX = offsetLeft + IMAGE.width * relativeClickX;
+    const centerY = offsetTop + IMAGE.height * relativeClickY;
 
     window.scrollTo(centerX - window.innerWidth / 2, centerY - window.innerHeight / 2);
 
@@ -178,10 +178,10 @@ function getFitToWidthDimensions(maxNatural=false) {
         }
     }
 
-    let imageAspectRatio = IMAGE.naturalWidth / IMAGE.naturalHeight;
+    const imageAspectRatio = IMAGE.naturalWidth / IMAGE.naturalHeight;
 
     let viewportWidth = window.innerWidth;
-    let viewportHeight = window.innerHeight;
+    const viewportHeight = window.innerHeight;
 
     let newImageHeight = newHeight(viewportWidth);
     let newImageWidth = newImageHeight * imageAspectRatio;
@@ -204,9 +204,9 @@ function getFitToHeightDimensions(maxNatural=false) {
         }
     }
 
-    let imageAspectRatio = IMAGE.naturalWidth / IMAGE.naturalHeight;
+    const imageAspectRatio = IMAGE.naturalWidth / IMAGE.naturalHeight;
 
-    let viewportWidth = window.innerWidth;
+    const viewportWidth = window.innerWidth;
     let viewportHeight = window.innerHeight;
 
     let newImageWidth = newWidth(viewportHeight);
@@ -222,7 +222,7 @@ function getFitToHeightDimensions(maxNatural=false) {
 }
 
 function getScrollbarWidth() {
-    let css = `
+    const css = `
         .scrollbar-measure {
             height: 100px;
             overflow: scroll;
@@ -232,14 +232,14 @@ function getScrollbarWidth() {
         }
     `;
 
-    let style = makeStyle();
+    const style = makeStyle();
     style.appendChild(document.createTextNode(css));
 
-    let div = document.createElement("div");
+    const div = document.createElement("div");
     div.className = "scrollbar-measure";
     document.body.appendChild(div);
 
-    let scrollbarWidth = div.offsetWidth - div.clientWidth;
+    const scrollbarWidth = div.offsetWidth - div.clientWidth;
 
     document.body.removeChild(div);
     document.head.removeChild(style);
@@ -247,7 +247,7 @@ function getScrollbarWidth() {
 }
 
 function makeStyle() {
-    let style = document.createElement("style");
+    const style = document.createElement("style");
     style.type = "text/css";
     document.head.appendChild(style);
     return style;
@@ -269,11 +269,11 @@ function updateImageStyle() {
 }
 
 function initInfoStyle() {
-    let style = makeStyle();
+    const style = makeStyle();
 
-    let zoomIndepependentWindowHeight = window.innerHeight * window.devicePixelRatio;
-    let relativeFontSize = DEFAULT_INFO_FONT_SIZE / zoomIndepependentWindowHeight * 100;
-    let css = `
+    const zoomIndepependentWindowHeight = window.innerHeight * window.devicePixelRatio;
+    const relativeFontSize = DEFAULT_INFO_FONT_SIZE / zoomIndepependentWindowHeight * 100;
+    const css = `
         #info {
             background: black;
             border-radius: ${relativeFontSize}vh;
@@ -299,7 +299,7 @@ function initInfoStyle() {
 function makeInfo() {
     initInfoStyle();
 
-    let info = document.createElement("div");
+    const info = document.createElement("div");
     info.id = "info";
     document.body.appendChild(info);
 
@@ -372,9 +372,9 @@ function makeImageCSS() {
 }
 
 function getRotatedCSS(newImageWidth, newImageHeight, viewportWidth, viewportHeight) {
-    let rotationAdjust = Math.abs(newImageHeight - newImageWidth) / 2;
-    let horizontalSpace = Math.max(0, (viewportWidth  - newImageHeight) / 2);
-    let verticalSpace   = Math.max(0, (viewportHeight - newImageWidth)  / 2);
+    const rotationAdjust = Math.abs(newImageHeight - newImageWidth) / 2;
+    const horizontalSpace = Math.max(0, (viewportWidth  - newImageHeight) / 2);
+    const verticalSpace   = Math.max(0, (viewportHeight - newImageWidth)  / 2);
     if (newImageHeight > newImageWidth) {
         return `
             img {
@@ -410,9 +410,9 @@ function onPreferencesChanged(changes) {
             }
 
             if (changes[OPTION_SIZE_STATES]) {
-                let lastSizeState = changes[OPTION_LAST_SIZE_STATE] ?
+                const lastSizeState = changes[OPTION_LAST_SIZE_STATE] ?
                     changes[OPTION_LAST_SIZE_STATE].newValue : result[OPTION_LAST_SIZE_STATE];
-                let rememberLastSizeState = changes[OPTION_REMEMBER_LAST_SIZE_STATE] ?
+                const rememberLastSizeState = changes[OPTION_REMEMBER_LAST_SIZE_STATE] ?
                     changes[OPTION_REMEMBER_LAST_SIZE_STATE].newValue : result[OPTION_REMEMBER_LAST_SIZE_STATE];
 
                 sizeStates = changes[OPTION_SIZE_STATES].newValue;
@@ -471,7 +471,7 @@ document.addEventListener("keyup", handleKey);
 window.addEventListener("focus", () => { justGainedFocus = true; }, true);
 window.addEventListener("resize", updateImageStyle, true);
 
-let imageAttributeObserver = new MutationObserver(function(mutations) {
+const imageAttributeObserver = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
         IMAGE.removeAttribute(mutation.attributeName);
     });
@@ -483,7 +483,7 @@ IMAGE.removeAttribute("height");
 IMAGE.removeAttribute("width");
 IMAGE.removeAttribute("style");
 
-let bodyAttributeObserver = new MutationObserver(function(mutations) {
+const bodyAttributeObserver = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
         document.body.removeAttribute(mutation.attributeName);
     });
