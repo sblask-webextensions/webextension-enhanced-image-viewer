@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/sblask/webextension-enhanced-image-viewer.svg?branch=master)](https://travis-ci.org/sblask/webextension-enhanced-image-viewer)
+[![Build Status](https://github.com/sblask/webextension-enhanced-image-viewer/actions/workflows/build.yml/badge.svg)](https://github.com/sblask/webextension-enhanced-image-viewer/actions/workflows/build.yml)
 
 Enhanced Image Viewer
 =====================
