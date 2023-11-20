@@ -126,7 +126,7 @@ function adjustScroll() {
         return;
     }
 
-    const { left, top } = IMAGE.getBoundingClientRect();
+    const {left, top} = IMAGE.getBoundingClientRect();
     const offsetLeft = left + window.scrollX;
     const offsetTop = top + window.scrollY;
 
@@ -476,7 +476,7 @@ const imageAttributeObserver = new MutationObserver(function(mutations) {
         IMAGE.removeAttribute(mutation.attributeName);
     });
 });
-imageAttributeObserver.observe(IMAGE, { attributes: true });
+imageAttributeObserver.observe(IMAGE, {attributes: true});
 
 IMAGE.removeAttribute("class");
 IMAGE.removeAttribute("height");
@@ -488,6 +488,6 @@ const bodyAttributeObserver = new MutationObserver(function(mutations) {
         document.body.removeAttribute(mutation.attributeName);
     });
 });
-bodyAttributeObserver.observe(document.body, { attributes: true });
+bodyAttributeObserver.observe(document.body, {attributes: true});
 
 document.body.removeAttribute("style");
