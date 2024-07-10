@@ -1,0 +1,64 @@
+{
+    "backgroundColor": {
+        "message": "背景颜色",
+        "hash": "58cdb633d6a3f6951e4858c4a8f04497"
+    },
+    "browserActionLabelDefault": {
+        "message": "增强型图片查看器",
+        "hash": "84a0d0874c1894bacbac67d2899aac51"
+    },
+    "extensionDescription": {
+        "message": "对浏览器的默认图片查看器进行增强",
+        "hash": "e041a64512d413d461edce262924d227"
+    },
+    "extensionName": {
+        "message": "增强型图片查看器",
+        "hash": "84a0d0874c1894bacbac67d2899aac51"
+    },
+    "fit": {
+        "message": "匹配浏览器窗口 (宽高比保持不变)",
+        "hash": "6909c8d6b9e4e7fb622a464429953d89"
+    },
+    "fitModesSectionTitle": {
+        "message": "左键点击 可以在此处选中的模式中按顺序循环切换\n",
+        "hash": "257aa513c419cd02cb5f51b361c6e07c"
+    },
+    "fitToHeight": {
+        "message": "匹配窗口高度",
+        "hash": "04a2e5c45343ad165d821bd97ce4c2cc"
+    },
+    "fitToHeightUnlessSmaller": {
+        "message": "匹配窗口高度且不放大",
+        "hash": "76e161611331aa478c49514eec300465"
+    },
+    "fitToWidth": {
+        "message": "匹配窗口宽度",
+        "hash": "17040bdc162f589ef6bf1069993023dd"
+    },
+    "fitToWidthUnlessSmaller": {
+        "message": "匹配窗口宽度且不放大",
+        "hash": "078e1e2a3b112417e668ae922cc87c10"
+    },
+    "fitUnlessSmaller": {
+        "message": "匹配浏览器窗口且不放大 (宽高比保持不变)",
+        "hash": "309b2d162831b4c7fe627a442392cc46"
+    },
+    "noFit": {
+        "message": "原始大小",
+        "hash": "c2363e8a96f85018e396eb707332e6a6"
+    },
+    "optionsTitle": {
+        "message": "选项",
+        "hash": "531dad0078a72193602b18495f0ad4e9"
+    },
+    "rememberLastRotation": {
+        "message": "记住上次的图片朝向",
+        "hash": "f82a266925ffd1eedfdc7f1ac2d39867"
+    },
+    "rememberLastSizeState": {
+        "message": "记住上次的缩放模式",
+        "hash": "43b20541f0dc1b75bdd48621fa624225"
+    },
+
+    "__WET_LOCALE__": { "message": "zh" }
+}
