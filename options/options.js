@@ -17,7 +17,6 @@ function restoreOptions() {
             }
 
             setTextValue("backgroundColor", result[OPTION_BACKGROUND_COLOR]);
-            document.getElementById("backgroundColorPicker").style.backgroundColor = result[OPTION_BACKGROUND_COLOR];
             setBooleanValue("rememberLastRotation", result[OPTION_REMEMBER_LAST_ROTATION]);
             setBooleanValue("rememberLastSizeState", result[OPTION_REMEMBER_LAST_SIZE_STATE]);
         }

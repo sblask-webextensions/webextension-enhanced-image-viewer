@@ -8,12 +8,10 @@
     <body>
         <form>
             <fieldset>
-                <div class="color-wrapper">
-                    <input type="color" id="backgroundColor"></input>
-                    <label for="backgroundColor">
-                        <span class="color-picker" id="backgroundColorPicker"></span>
-                        <span class="label" data-i18n="backgroundColor"><span>
-                    </label>
+                <legend data-i18n="optionsTitle"></legend>
+                <div class="box-wrapper">
+                    <input type="color" id="backgroundColor">
+                    <label for="backgroundColor" data-i18n="backgroundColor"></label>
                 </div>
                 <div class="box-wrapper">
                     <input type="checkbox" id="rememberLastRotation"></input>
@@ -56,10 +54,8 @@
                     </div>
                 </fieldset>
 
-                <legend data-i18n="optionsTitle"></legend>
             </fieldset>
         </form>
-        <script src="../browser-polyfill.js"></script>
         <script src="./options.js"></script>
     </body>
 
