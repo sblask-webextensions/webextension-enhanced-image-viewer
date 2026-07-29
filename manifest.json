@@ -4,7 +4,8 @@
         "scripts": [
             "browser-polyfill.js",
             "background.js"
-        ]
+        ],
+        "type": "module"
     },
     "browser_action": {
         "browser_style": false,

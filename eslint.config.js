@@ -1,24 +1,23 @@
-const globals = require("globals");
-const js = require("@eslint/js");
-const stylistic = require("@stylistic/eslint-plugin");
+import globals from "globals";
+import js from "@eslint/js";
+import stylistic from "@stylistic/eslint-plugin";
 
-module.exports = [
+export default [
     {
         ignores: [
-            "browser-polyfill.js",
+            "dist-*/",
         ],
     },
     {
         languageOptions: {
             globals: {
                 ...globals.browser,
-                ...globals.commonjs,
                 ...globals.es6,
                 ...globals.jquery,
                 ...globals.webextensions,
             },
             parserOptions: {
-                ecmaVersion: 2020,
+                ecmaVersion: 2024,
             },
         },
         plugins: {
@@ -29,6 +28,10 @@ module.exports = [
             "no-restricted-syntax": [
                 "error",
                 "ForInStatement",
+                {
+                    selector: "AwaitExpression:not(:function AwaitExpression)",
+                    message: "Top-level await is disallowed in service workers.",
+                },
             ],
             "no-unused-vars": [
                 "error",
