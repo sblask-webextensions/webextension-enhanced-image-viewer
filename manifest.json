@@ -2,7 +2,6 @@
     "author": "Sebastian Blask",
     "background": {
         "scripts": [
-            "browser-polyfill.js",
             "background.js"
         ],
         "type": "module"
@@ -29,6 +28,7 @@
         "128": "icon-128x128.png"
     },
     "manifest_version": 2,
+    "minimum_chrome_version": "148",
     "name": "__MSG_extensionName__",
     "options_ui": {
         "page": "options/options.html"
