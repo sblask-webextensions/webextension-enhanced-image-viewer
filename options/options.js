@@ -11,7 +11,7 @@ function restoreOptions() {
         OPTION_REMEMBER_LAST_SIZE_STATE,
         OPTION_SIZE_STATES,
     ]).then(
-        result => {
+        (result) => {
             for (const state of result[OPTION_SIZE_STATES]) {
                 setBooleanValue(state, true);
             }

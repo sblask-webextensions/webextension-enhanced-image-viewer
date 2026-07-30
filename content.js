@@ -139,7 +139,7 @@ function adjustScroll() {
     relativeClickY = 0;
 }
 
-function handleKey(event)  {
+function handleKey(event) {
     if (event.ctrlKey) {
         return;
     }
@@ -379,7 +379,7 @@ function getRotatedCSS(newImageWidth, newImageHeight, viewportWidth, viewportHei
         return `
             img {
                 height: ${newImageHeight}px;
-                left:   ${ rotationAdjust + horizontalSpace}px;
+                left:   ${rotationAdjust + horizontalSpace}px;
                 margin: 0;
                 top:    ${-rotationAdjust + verticalSpace}px;
             }
@@ -390,7 +390,7 @@ function getRotatedCSS(newImageWidth, newImageHeight, viewportWidth, viewportHei
                 height: ${newImageHeight}px;
                 left:   ${-rotationAdjust + horizontalSpace}px;
                 margin: 0;
-                top:    ${ rotationAdjust + verticalSpace}px;
+                top:    ${rotationAdjust + verticalSpace}px;
             }
         `;
     }
@@ -410,10 +410,12 @@ function onPreferencesChanged(changes) {
             }
 
             if (changes[OPTION_SIZE_STATES]) {
-                const lastSizeState = changes[OPTION_LAST_SIZE_STATE] ?
-                    changes[OPTION_LAST_SIZE_STATE].newValue : result[OPTION_LAST_SIZE_STATE];
-                const rememberLastSizeState = changes[OPTION_REMEMBER_LAST_SIZE_STATE] ?
-                    changes[OPTION_REMEMBER_LAST_SIZE_STATE].newValue : result[OPTION_REMEMBER_LAST_SIZE_STATE];
+                const lastSizeState = changes[OPTION_LAST_SIZE_STATE]
+                    ? changes[OPTION_LAST_SIZE_STATE].newValue
+                    : result[OPTION_LAST_SIZE_STATE];
+                const rememberLastSizeState = changes[OPTION_REMEMBER_LAST_SIZE_STATE]
+                    ? changes[OPTION_REMEMBER_LAST_SIZE_STATE].newValue
+                    : result[OPTION_REMEMBER_LAST_SIZE_STATE];
 
                 sizeStates = changes[OPTION_SIZE_STATES].newValue;
                 if (rememberLastSizeState && sizeStates.indexOf(lastSizeState) >= 0) {
