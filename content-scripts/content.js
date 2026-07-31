@@ -8,6 +8,8 @@ const OPTION_LAST_SIZE_STATE = "lastSizeState";
 const OPTION_REMEMBER_LAST_SIZE_STATE = "rememberLastSizeState";
 
 const IMAGE = document.getElementsByTagName("img")[0];
+IMAGE.draggable = false;
+IMAGE.addEventListener("dragstart", (event) => event.preventDefault());
 
 const IMAGE_STYLE = makeStyle();
 const INFO_STYLE = makeStyle();
@@ -90,8 +92,19 @@ let currentSizeState = undefined;
 let relativeClickX = 0;
 let relativeClickY = 0;
 
+let dragState = undefined;
+let didDrag = false;
+
 function handleClick(event) {
     if (event.button !== 0) {
+        return;
+    }
+
+    if (didDrag) {
+        didDrag = false;
+        event.stopImmediatePropagation();
+        event.stopPropagation();
+        event.preventDefault();
         return;
     }
 
@@ -462,6 +475,59 @@ function initFromPreferences() {
         }
     );
 }
+
+document.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const scroller = document.scrollingElement;
+    dragState = {
+        pointerId: event.pointerId,
+        scrollLeft: scroller.scrollLeft,
+        scrollTop: scroller.scrollTop,
+        startX: event.clientX,
+        startY: event.clientY,
+    };
+    didDrag = false;
+
+    document.documentElement.setPointerCapture(event.pointerId);
+}, true);
+
+document.addEventListener("pointermove", (event) => {
+    if (!dragState || event.pointerId !== dragState.pointerId) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const deltaX = event.clientX - dragState.startX;
+    const deltaY = event.clientY - dragState.startY;
+
+    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+        didDrag = true;
+    }
+
+    const scroller = document.scrollingElement;
+    scroller.scrollLeft = dragState.scrollLeft - deltaX;
+    scroller.scrollTop = dragState.scrollTop - deltaY;
+}, true);
+
+function endDrag(event) {
+    if (!dragState || event.pointerId !== dragState.pointerId) {
+        return;
+    }
+
+    if (document.documentElement.hasPointerCapture(event.pointerId)) {
+        document.documentElement.releasePointerCapture(event.pointerId);
+    }
+    dragState = undefined;
+}
+
+document.addEventListener("pointerup", endDrag, true);
+document.addEventListener("pointercancel", endDrag, true);
 
 browser.storage.onChanged.addListener(onPreferencesChanged);
 initFromPreferences();

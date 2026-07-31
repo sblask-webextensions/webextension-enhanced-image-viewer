@@ -11,7 +11,9 @@
         inset: 0;
         margin: auto;
         position: absolute;
+        touch-action: none;
         transform-origin: center;
+        user-select: none;
         width: auto;
     }
 }
