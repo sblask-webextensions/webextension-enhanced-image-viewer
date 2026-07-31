@@ -176,7 +176,7 @@ function handleKey(event) {
     }
 }
 
-function getFitDimensions(maxNatural=false) {
+function getFitDimensions(maxNatural = false) {
     let [newImageWidth, newImageHeight, viewportWidth, viewportHeight] = getFitToWidthDimensions(maxNatural);
 
     if (newImageWidth > window.innerHeight) {
@@ -186,7 +186,7 @@ function getFitDimensions(maxNatural=false) {
     return [newImageWidth, newImageHeight, viewportWidth, viewportHeight];
 }
 
-function getFitToWidthDimensions(maxNatural=false) {
+function getFitToWidthDimensions(maxNatural = false) {
     function newHeight(viewportWidth) {
         if (maxNatural) {
             return Math.min(IMAGE.naturalHeight, viewportWidth);
@@ -212,7 +212,7 @@ function getFitToWidthDimensions(maxNatural=false) {
     return [newImageWidth, newImageHeight, viewportWidth, viewportHeight];
 }
 
-function getFitToHeightDimensions(maxNatural=false) {
+function getFitToHeightDimensions(maxNatural = false) {
     function newWidth(viewportHeight) {
         if (maxNatural) {
             return Math.min(IMAGE.naturalWidth, viewportHeight);
