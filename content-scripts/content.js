@@ -7,11 +7,10 @@ const OPTION_REMEMBER_LAST_ROTATION = "rememberLastRotation";
 const OPTION_LAST_SIZE_STATE = "lastSizeState";
 const OPTION_REMEMBER_LAST_SIZE_STATE = "rememberLastSizeState";
 
-const DEFAULT_INFO_FONT_SIZE = 16;
-
 const IMAGE = document.getElementsByTagName("img")[0];
 
 const IMAGE_STYLE = makeStyle();
+const INFO_STYLE = makeStyle();
 const INFO = makeInfo();
 const SCROLLBAR_WIDTH = getScrollbarWidth();
 
@@ -74,6 +73,11 @@ const SIZES = {
         description: browser.i18n.getMessage("fitToHeight"),
     },
 };
+
+const MESSAGE_GET_ZOOM = "getZoom";
+const MESSAGE_ZOOM_CHANGED = "zoomChanged";
+
+let browserZoom = undefined;
 
 let infoTimeout = undefined;
 let justGainedFocus = false;
@@ -268,23 +272,24 @@ function updateImageStyle() {
     updateInfo();
 }
 
-function initInfoStyle() {
-    const style = makeStyle();
+async function updateInfoStyle() {
+    if (browserZoom === undefined) {
+        browserZoom = await browser.runtime.sendMessage({type: MESSAGE_GET_ZOOM});
+    }
 
-    const zoomIndepependentWindowHeight = window.innerHeight * window.devicePixelRatio;
-    const relativeFontSize = DEFAULT_INFO_FONT_SIZE / zoomIndepependentWindowHeight * 100;
+    const relativeFontSize = 16 / browserZoom;
     const css = `
         #info {
             background: black;
-            border-radius: ${relativeFontSize}vh;
-            border: ${0.1 * relativeFontSize}vh solid #555;
+            border-radius: ${relativeFontSize}px;
+            border: ${0.1 * relativeFontSize}px solid #555;
             color: white;
-            font-size: ${relativeFontSize}vh;
+            font-size: ${relativeFontSize}px;
             opacity: 0;
-            padding: ${0.3 * relativeFontSize}vh ${0.6 * relativeFontSize}vh;
+            padding: ${0.3 * relativeFontSize}px ${0.6 * relativeFontSize}px;
             position: fixed;
-            right: ${relativeFontSize}vh;
-            top: ${relativeFontSize}vh;
+            right: ${relativeFontSize}px;
+            top: ${relativeFontSize}px;
             transition: opacity .5s ease-in-out;
         }
         #info.show {
@@ -292,13 +297,13 @@ function initInfoStyle() {
         }
     `;
 
-    style.appendChild(document.createTextNode(css));
-    return style;
+    while (INFO_STYLE.hasChildNodes()) {
+        INFO_STYLE.removeChild(INFO_STYLE.firstChild);
+    }
+    INFO_STYLE.appendChild(document.createTextNode(css));
 }
 
 function makeInfo() {
-    initInfoStyle();
-
     const info = document.createElement("div");
     info.id = "info";
     document.body.appendChild(info);
@@ -318,11 +323,12 @@ function updateInfo() {
     INFO.textContent = text;
 }
 
-function flashInfo() {
+async function flashInfo() {
     if (infoTimeout) {
         clearTimeout(infoTimeout);
     }
 
+    await updateInfoStyle();
     showInfo();
     infoTimeout = setTimeout(hideInfo, 2000);
 }
@@ -349,23 +355,16 @@ function makeImageCSS() {
     }
 
     return `
+        @media not print {
+            :root {
+                background: ${backgroundColor};
+            }
+        }
         body, html {
-            all: unset;
             background: ${backgroundColor};
         }
         img {
-            all: unset;
-            bottom: 0;
-            cursor: default;
-            height: auto;
-            left: 0;
-            margin: auto;
-            position: absolute;
-            right: 0;
-            top: 0;
-            transform-origin: center;
             transform: perspective(999px) rotate(${rotation}deg);
-            width: auto;
         }
         ${cssOverride}
     `;
@@ -466,6 +465,12 @@ function initFromPreferences() {
 
 browser.storage.onChanged.addListener(onPreferencesChanged);
 initFromPreferences();
+
+browser.runtime.onMessage.addListener((message) => {
+    if (message.type === MESSAGE_ZOOM_CHANGED) {
+        browserZoom = message.zoomFactor;
+    }
+});
 
 document.addEventListener("click", handleClick, true);
 document.addEventListener("keyup", handleKey);

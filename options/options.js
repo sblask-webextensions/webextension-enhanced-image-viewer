@@ -34,11 +34,11 @@ function enableAutosave() {
 
 function loadTranslations() {
     for (const element of document.querySelectorAll("[data-i18n]")) {
-        const translationKey = element.getAttribute("data-i18n");
-        if (typeof browser === "undefined" || !browser.i18n.getMessage(translationKey)) {
-            element.textContent = element.getAttribute("data-i18n");
+        if (typeof browser === "undefined" || !browser.i18n.getMessage(element.dataset.i18n)) {
+            // fallback for testing directly in browser outside a webextension
+            element.textContent = element.dataset.i18n;
         } else {
-            element.innerHTML = browser.i18n.getMessage(translationKey);
+            element.textContent = browser.i18n.getMessage(element.dataset.i18n);
         }
     }
 }

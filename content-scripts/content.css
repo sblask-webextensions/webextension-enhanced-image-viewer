@@ -1,0 +1,17 @@
+@layer enhanced-image-viewer-base-layer {
+    body, html {
+        all: unset;
+        height: 100%;
+        width: 100%;
+    }
+    img {
+        all: unset;
+        cursor: default;
+        height: auto;
+        inset: 0;
+        margin: auto;
+        position: absolute;
+        transform-origin: center;
+        width: auto;
+    }
+}

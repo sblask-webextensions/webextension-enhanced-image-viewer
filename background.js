@@ -14,9 +14,12 @@ const AVAILABLE_SIZE_STATES = [
     "fitToWidthUnlessSmaller",
 ];
 
-const IMAGE_FILE_URL = /file:\/\/.+\.(gif|gifv|jpg|jpeg|png|svg|webm)/;
+const IMAGE_FILE_OR_DATA_URL = /(file:\/\/.+\.(gif|gifv|jpg|jpeg|png|svg|webm)|(data:image\/.+))/;
 
-const knownImageURLs = new Set();
+const KNOWN_IMAGE_URL_SESSION_KEY = "known-image-url";
+
+const MESSAGE_GET_ZOOM = "getZoom";
+const MESSAGE_ZOOM_CHANGED = "zoomChanged";
 
 browser.storage.local.get([
     OPTION_BACKGROUND_COLOR,
@@ -53,33 +56,70 @@ browser.webRequest.onHeadersReceived.addListener(
 
 browser.webNavigation.onCommitted.addListener(maybeModifyTab);
 
-function checkForImageURL(details) {
-    if (knownImageURLs.has(details.url)) {
-        return;
+// browser.tabs.getZoom is not available in content scripts, make it accessible through messages
+browser.runtime.onMessage.addListener(getZoom);
+function getZoom(message, sender) {
+    if (
+        sender.id !== browser.runtime.id
+        || message.type !== MESSAGE_GET_ZOOM
+        || sender.tab?.id === undefined
+    ) {
+        return undefined;
     }
 
+    return browser.tabs.getZoom(sender.tab.id);
+}
+browser.tabs.onZoomChange.addListener(notifyZoomChanged);
+function notifyZoomChanged({tabId, newZoomFactor}) {
+    browser.tabs.sendMessage(tabId, {
+        type: MESSAGE_ZOOM_CHANGED,
+        zoomFactor: newZoomFactor,
+    }).catch(() => {
+        // The tab does not contain this extension's content script.
+    });
+}
+
+function getKnownImageURLStorageKey(url) {
+    return `${KNOWN_IMAGE_URL_SESSION_KEY}:${url}`;
+}
+
+async function checkForImageURL(details) {
     for (const header of details.responseHeaders) {
         if (header.name.toLowerCase() === "content-type" && header.value.indexOf("image/") === 0) {
-            knownImageURLs.add(details.url);
+            const storageKey = getKnownImageURLStorageKey(details.url);
+            await browser.storage.session.set({[storageKey]: true});
             return;
         }
     }
 }
 
-function maybeModifyTab(details) {
-    if (!knownImageURLs.has(details.url) && !details.url.match(IMAGE_FILE_URL) || details.frameId !== 0) {
+async function isKnownImageURL(url) {
+    const storageKey = getKnownImageURLStorageKey(url);
+    const result = await browser.storage.session.get(storageKey);
+    return result[storageKey] === true;
+}
+
+async function maybeModifyTab(details) {
+    if (details.frameId !== 0) {
         return;
     }
 
-    modifyTab(details.tabId);
-}
+    if (!await isKnownImageURL(details.url) && !details.url.match(IMAGE_FILE_OR_DATA_URL)) {
+        return;
+    }
 
-function modifyTab(tabId) {
-    browser.tabs.executeScript(
-        tabId,
-        {
-            file: "content.js",
-            runAt: "document_start",
-        }
-    );
+    const target = {tabId: details.tabId};
+    try {
+        await browser.scripting.insertCSS({
+            target,
+            files: ["content-scripts/content.css"],
+        });
+        await browser.scripting.executeScript({
+            target,
+            files: ["content-scripts/content.js"],
+            injectImmediately: true,
+        });
+    } catch (error) {
+        console.warn(`Unable to enhance ${details.url}`, error);
+    }
 }
