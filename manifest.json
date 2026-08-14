@@ -1,6 +1,5 @@
 {
     "action": {
-        "browser_style": false,
         "default_icon": "icon.svg",
         "default_popup": "options/options.html",
         "default_title": "__MSG_browserActionLabelDefault__"
