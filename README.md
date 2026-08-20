@@ -1,4 +1,6 @@
 [![pre-commit Status](https://github.com/sblask/webextension-enhanced-image-viewer/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/sblask/webextension-enhanced-image-viewer/actions/workflows/pre-commit.yml)
+[![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/hinoflbjclgnnaccbpbenmjomjmiafmc?color=db4437)](https://chromewebstore.google.com/detail/enhanced-image-viewer/hinoflbjclgnnaccbpbenmjomjmiafmc)
+[![Mozilla Add-on Version](https://img.shields.io/amo/v/sblask-enhanced-image-viewer?color=ff7139)](https://addons.mozilla.org/firefox/addon/sblask-enhanced-image-viewer/)
 
 Enhanced Image Viewer
 =====================
